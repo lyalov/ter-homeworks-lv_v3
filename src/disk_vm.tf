@@ -3,14 +3,14 @@ resource "yandex_compute_disk" "storage_disk" {
   name  = "storage-disk-${count.index + 1}"
   type  = "network-hdd"
   size  = 1
-  zone  = var.default_zone  # ✅ Без хардкода!
+  zone  = var.default_zone
 }
 
 resource "yandex_compute_instance" "storage" {
   name        = "storage"
   hostname    = "storage"
   platform_id = "standard-v3"
-  zone        = var.default_zone  # ✅ Без хардкода!
+  zone        = var.default_zone
 
   resources {
     cores         = 2
