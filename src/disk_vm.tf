@@ -1,18 +1,16 @@
-# 1. Диски
 resource "yandex_compute_disk" "storage_disk" {
   count = 3
-  name = "storage-disk-${count.index + 1}"
-  type = "network-hdd"
-  size = 1
-  zone = "ru-central1-a"
+  name  = "storage-disk-${count.index + 1}"
+  type  = "network-hdd"
+  size  = 1
+  zone  = var.default_zone  # ✅ Без хардкода!
 }
 
-# 2. ВМ Storage
 resource "yandex_compute_instance" "storage" {
   name        = "storage"
   hostname    = "storage"
   platform_id = "standard-v3"
-  zone        = "ru-central1-a"
+  zone        = var.default_zone  # ✅ Без хардкода!
 
   resources {
     cores         = 2
@@ -30,7 +28,7 @@ resource "yandex_compute_instance" "storage" {
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.develop.id
-    nat                = true
+    nat                = false
     security_group_ids = [yandex_vpc_security_group.example.id]
   }
 

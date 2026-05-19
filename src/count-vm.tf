@@ -1,13 +1,13 @@
 resource "yandex_compute_instance" "web" {
-  count = 2
+  count       = 2
   name        = "web-${count.index + 1}"
   hostname    = "web-${count.index + 1}"
   platform_id = "standard-v3"
-  zone        = "ru-central1-a"
+  zone        = var.default_zone
 
   resources {
     cores         = 2
-    memory        = 2
+    memory        = 1
     core_fraction = 20
   }
 
@@ -21,7 +21,7 @@ resource "yandex_compute_instance" "web" {
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.develop.id
-    nat                = true
+    nat                = false
     security_group_ids = [yandex_vpc_security_group.example.id]
   }
 
@@ -30,5 +30,4 @@ resource "yandex_compute_instance" "web" {
   }
 
   depends_on = [yandex_compute_instance.db]
- 
 }
