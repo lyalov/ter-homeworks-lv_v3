@@ -1,27 +1,27 @@
 resource "yandex_compute_instance" "web" {
-  count       = 2
+  count       = var.web_count
   name        = "web-${count.index + 1}"
   hostname    = "web-${count.index + 1}"
-  platform_id = "standard-v3"
+  platform_id = var.platform_id
   zone        = var.default_zone
 
   resources {
-    cores         = 2
-    memory        = 1
-    core_fraction = 20
+    cores         = var.web_cores
+    memory        = var.web_memory
+    core_fraction = var.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
-      type     = "network-hdd"
-      size     = 10
+      type     = var.disk_type
+      size     = var.web_disk_size
     }
   }
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.develop.id
-    nat                = true
+    nat                = var.enable_nat
     security_group_ids = [yandex_vpc_security_group.example.id]
   }
 

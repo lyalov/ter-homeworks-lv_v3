@@ -1,34 +1,34 @@
 resource "yandex_compute_disk" "storage_disk" {
-  count = 3
+  count = var.storage_disk_count
   name  = "storage-disk-${count.index + 1}"
-  type  = "network-hdd"
-  size  = 1
+  type  = var.disk_type
+  size  = var.extra_disk_size
   zone  = var.default_zone
 }
 
 resource "yandex_compute_instance" "storage" {
   name        = "storage"
   hostname    = "storage"
-  platform_id = "standard-v3"
+  platform_id = var.platform_id
   zone        = var.default_zone
 
   resources {
-    cores         = 2
-    memory        = 2
-    core_fraction = 20
+    cores         = var.storage_cores
+    memory        = var.storage_memory
+    core_fraction = var.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
-      type     = "network-hdd"
-      size     = 10
+      type     = var.disk_type
+      size     = var.storage_boot_disk_size
     }
   }
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.develop.id
-    nat                = true
+    nat                = var.enable_nat
     security_group_ids = [yandex_vpc_security_group.example.id]
   }
 
