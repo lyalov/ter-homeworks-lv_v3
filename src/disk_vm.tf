@@ -1,5 +1,5 @@
-resource "yandex_compute_disk" "storage_disk" {
-  count = var.storage_disk_count
+resource "yandex_compute_disk" "extra" {
+  count = var.extra_disk_count
   name  = "storage-disk-${count.index + 1}"
   type  = var.disk_type
   size  = var.extra_disk_size
@@ -32,14 +32,14 @@ resource "yandex_compute_instance" "storage" {
     security_group_ids = [yandex_vpc_security_group.example.id]
   }
 
-  metadata = {
-    ssh-keys = "ubuntu:${local.ssh_public_key}"
-  }
-
   dynamic "secondary_disk" {
-    for_each = yandex_compute_disk.storage_disk
+    for_each = yandex_compute_disk.extra
     content {
       disk_id = secondary_disk.value.id
     }
+  }
+
+  metadata = {
+    ssh-keys = "ubuntu:${local.ssh_public_key}"
   }
 }

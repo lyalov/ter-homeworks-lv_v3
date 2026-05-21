@@ -3,8 +3,7 @@ data "yandex_compute_image" "ubuntu" {
 }
 
 resource "yandex_compute_instance" "db" {
-  for_each = { for vm in var.each_vm : vm.vm_name => vm }
-
+  for_each    = { for vm in var.db_config : vm.vm_name => vm }
   name        = each.key
   hostname    = each.key
   platform_id = var.platform_id
@@ -20,7 +19,7 @@ resource "yandex_compute_instance" "db" {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
       type     = var.disk_type
-      size     = each.value.disk_volume
+      size     = each.value.disk
     }
   }
 
